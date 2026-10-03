@@ -8,13 +8,14 @@ MAS.S62 *Self-Evolving AI* (Fall 2026) course project.
 Two lines of work have improved personalized assistants. One makes the assistant
 *proactive*: it acts on hidden intents and asks a clarification question when a request is
 underspecified. The other makes it *self-evolving*: it improves its own components from
-experience. Both evaluate the agent at one point of a user's lifecycle, with memory either
-empty or already filled. Real use is the whole **lifecycle**: the agent meets a user with no
-memory, its memory fills, and the user's preferences keep changing underneath it. Throughout,
-what the agent does is decided by its **interaction policy**: at each task, whether to ask
-about a preference, confirm one, or act, and about which preference; memory is its input and
-stays fixed. In every system we surveyed this policy is fixed, and a confident note in memory
-stops the agent from asking, so it stays silent once its memory is confident and outdated.
+experience. Real use is a whole **lifecycle**: the agent meets a user with no memory, its
+memory fills, and the user's preferences keep changing. Throughout, what the agent does is
+decided by its **interaction policy**: at each task, whether to ask about a preference,
+confirm one, or act, and about which preference; memory is its input and stays fixed. Both
+lines keep that policy fixed: proactive agents evaluate it on a fixed user, and self-evolving
+agents evolve the weights or the memory around it. In the systems closest to ours, a confident
+note in memory stops the agent from asking, so it stays silent once its memory is confident
+and outdated.
 
 We move self-evolution from the memory to the interaction policy. The policy is a short
 **rule list** that maps the state of memory to an action. In prior systems these rules are
@@ -24,7 +25,7 @@ form one pipeline:
 | | | runs it |
 |---|---|---|
 | **Idea 1: evolved across users** | one rule list evolved across *previous* users before deployment and run unchanged on a new user through all four phases | Liu |
-| **Idea 2: revised within a user** | the rule list of Idea 1 kept changing while serving one user; whenever the agent acts without asking and post-action feedback arrives, a rule is added, removed, or a number in one is changed (for example, "ask again once a note is 30 tasks old" becomes 15 for a user whose preferences change often) | Sun |
+| **Idea 2: revised within a user** | the rule list of Idea 1 kept changing while serving one user; whenever the agent acts without asking and post-action feedback arrives, a candidate change (add a rule, remove one, or change a number in one) is kept only if it lowers the gap (for example, "ask again once a note is 30 tasks old" becomes 15 for a user whose preferences change often) | Sun |
 
 A policy is judged by its **asking curve**: the questions it asks over the user's lifecycle
 set against the questions that were needed. The area between the two curves, the
@@ -63,8 +64,8 @@ diagnostic, since memory is fixed.
 
 **Risks.** (1) PAHF's simulated users come from one template, so an evolved policy may be a
 fixed schedule; test users and the second domain check this. (2) At cold start all policies
-may look alike (Pep bounds the gain of question choice at about one question per
-interaction); the expected difference comes after drift, so the gap is reported per phase.
+may look alike (Pep's ablation found only a modest saving from choosing questions in its
+setting); the expected difference comes after drift, so the gap is reported per phase.
 
 ## Layout
 
