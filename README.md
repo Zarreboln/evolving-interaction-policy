@@ -8,12 +8,13 @@ MAS.S62 *Self-Evolving AI* (Fall 2026) course project.
 Two lines of work have improved personalized assistants. One makes the assistant
 *proactive*: it acts on hidden intents and asks a clarification question when a request is
 underspecified. The other makes it *self-evolving*: it improves its own components from
-experience. Both leave out two features of real use. At the first interaction the agent has
-no memory of the user (**cold start**), and over time the user's preferences change
-(**preference drift**). In both situations what the agent does is decided by its
-**interaction policy**: which preference to ask about, when to ask, and what to write to
-memory. In every system we surveyed this policy is fixed, and it asks only when memory holds
-nothing relevant, so the agent stops asking once its memory is confident and outdated.
+experience. Both evaluate the agent at one point of a user's lifecycle, with memory either
+empty or already filled. Real use is the whole **lifecycle**: the agent meets a user with no
+memory, its memory fills, and the user's preferences keep changing underneath it. Throughout,
+what the agent does is decided by its **interaction policy**: which preference to ask about,
+when to ask, and what to write to memory. In every system we surveyed this policy is fixed,
+and it asks only when memory holds nothing relevant, so the agent stops asking once its
+memory is confident and outdated.
 
 We move self-evolution from the memory to the interaction policy. The policy is a short
 **rule list** that maps the state of memory to an action. In prior systems these rules are
