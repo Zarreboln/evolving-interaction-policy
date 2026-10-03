@@ -11,10 +11,10 @@ underspecified. The other makes it *self-evolving*: it improves its own componen
 experience. Both evaluate the agent at one point of a user's lifecycle, with memory either
 empty or already filled. Real use is the whole **lifecycle**: the agent meets a user with no
 memory, its memory fills, and the user's preferences keep changing underneath it. Throughout,
-what the agent does is decided by its **interaction policy**: which preference to ask about,
-when to ask, and what to write to memory. In every system we surveyed this policy is fixed,
-and it asks only when memory holds nothing relevant, so the agent stops asking once its
-memory is confident and outdated.
+what the agent does is decided by its **interaction policy**: at each task, whether to ask
+about a preference, confirm one, or act, and about which preference; memory is its input and
+stays fixed. In every system we surveyed this policy is fixed, and a confident note in memory
+stops the agent from asking, so it stays silent once its memory is confident and outdated.
 
 We move self-evolution from the memory to the interaction policy. The policy is a short
 **rule list** that maps the state of memory to an action. In prior systems these rules are
@@ -39,7 +39,8 @@ tasks, and harness, and add what the interaction policy needs. The full specific
 - A user is a list of preference slots, each with a stake (reversible or irreversible) and a
   default; users differ by at least threefold in how often their preferences change.
 - Each user is served 60 tasks; memory passes through cold start (1–10), warm (11–25),
-  steady (26–40), and drift and recovery (41–60) after a scheduled drift at task 40.
+  steady (26–40), and drift and recovery (41–60) after a scheduled drift at task 40 shared by
+  all users; unscheduled drifts also occur at each user's own rate.
 - At each task the agent chooses `ask` (one user turn), `confirm` (half a turn), or `act`
   (no turn, then post-action feedback that is wrong with a set probability).
 - The harness labels a question *needed* from the hidden preferences; tasks where the
@@ -47,7 +48,8 @@ tasks, and harness, and add what the interaction policy needs. The full specific
 - Six baselines on every split: never ask, always ask, PAHF's fixed rule, asking again at a
   fixed interval, a one-step value-of-information policy, and the evolved policy.
 - One check stated in advance: in the drift phase PAHF's fixed rule must ask fewer than one
-  in ten of the needed questions, or the thesis is wrong and we report that.
+  in ten of the needed questions, or this prediction about PAHF's fixed rule fails and we
+  report that.
 
 **Data.** Version 0 instantiates the protocol on PAHF's two domains, a home assistant and an
 online shopping assistant (40 and 20 users, re-split 3:1 into previous users, used for
@@ -56,7 +58,8 @@ evolution, and test users). Version 1 adds a second domain in the style of CAPA
 testing).
 
 **Metrics.** Asking-curve gap (headline); silent-error cost; gain per early question;
-detection lag and questions to recovery; repeat-question rate and spurious-write rate.
+detection lag and questions to recovery; repeat-question rate; spurious-write rate as a
+diagnostic, since memory is fixed.
 
 **Risks.** (1) PAHF's simulated users come from one template, so an evolved policy may be a
 fixed schedule; test users and the second domain check this. (2) At cold start all policies

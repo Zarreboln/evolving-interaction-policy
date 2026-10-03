@@ -56,7 +56,7 @@ asking curve counts questions per task, not tasks with a question.
 
 **Post-action feedback.** With probability $p_{fb}$ the simulated user corrects one
 wrong slot. With probability $\varepsilon$ the feedback is *incorrect* (injected noise).
-The agent decides whether to write the feedback into memory.
+The memory system, which is fixed, decides whether the feedback is written into memory.
 
 **What is fixed.** The backbone LLM, the user simulator, the memory store and the task
 sequence are frozen and seeded. The policy is the only moving part. An open track lets
@@ -129,7 +129,8 @@ separately; the pre-registered check in Section 9 is the drift-phase recall.)
 
 **Hygiene.**
 - Repeat-question rate: same slot asked twice with no intervening drift or feedback.
-- Spurious-write rate: incorrect post-action feedback written to memory.
+- Spurious-write rate: incorrect post-action feedback written to memory. A diagnostic of the
+  fixed memory system, since the policy only chooses ask / confirm / act.
 
 **Logged but not scored.** PAHF's `FF_pre` / `FF_post` (pre-action questions and
 post-action corrections) are kept in the per-task log for comparison with PAHF's own
@@ -151,7 +152,7 @@ Six baselines run on every split, in this order; the first four are controls, no
 | Evolved policy (ours) | the claim: smaller total gap than every fixed baseline over the whole lifecycle |
 
 The PAHF's-fixed-rule row is the pre-registered demonstration of the proposal's thesis. If
-it does not collapse in P4, our central hypothesis is wrong and we report that.
+it does not collapse in P4, this prediction fails and we report that.
 
 ## 7. Domains and scale
 
