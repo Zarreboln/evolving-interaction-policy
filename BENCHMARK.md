@@ -149,10 +149,10 @@ Seven baselines run on every split, in this order; the first four are controls, 
 | Ask again at a fixed interval | P4 recovers; P3 over-asks at the interval rate |
 | One-step value of information (REVOIR-style, no memory of recurrence) | good per-task; under-invests in high-$W$ slots at P1 |
 | Oracle (knows $\theta_u(t)$) | success $\approx 1$, zero questions; defines the floor of both areas |
-| Evolved policy (ours) | the claim: smaller total gap than every fixed baseline over the whole lifecycle |
+| Evolved policy (ours) | the claim: smaller total gap than every fixed baseline except the oracle, over the whole lifecycle |
 
 The PAHF's-fixed-rule row is the pre-registered demonstration of the proposal's thesis. If
-it does not collapse in P4, the thesis is wrong and we report that.
+it does not collapse in P4, our central hypothesis is wrong and we report that.
 
 ## 7. Domains and scale
 

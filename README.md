@@ -17,8 +17,8 @@ nothing relevant, so the agent stops asking once its memory is confident and out
 
 We move self-evolution from the memory to the interaction policy. The policy is a short
 **rule list** that maps the state of memory to an action. In prior systems these rules are
-fixed; here they are proposed, scored, and revised from interaction, at two scales that form
-one pipeline:
+fixed; here an LLM proposes and rewrites them and the harness scores them, at two scales that
+form one pipeline:
 
 | | | runs it |
 |---|---|---|
