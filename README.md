@@ -9,7 +9,7 @@ Two lines of work have improved personalized assistants. One makes the assistant
 *proactive*: it acts on hidden intents and asks a clarification question when a request is
 underspecified. The other makes it *self-evolving*: it improves its own components from
 experience. Real use is a whole **lifecycle**: the agent meets a user with no memory, its
-memory fills, and the user's preferences keep changing. Throughout, what the agent does is
+memory fills and settles, and then goes out of date as the user's preferences change. Throughout, what the agent does is
 decided by its **interaction policy**: at each task, whether to ask about a preference,
 confirm one, or act, and about which preference; memory is its input and stays fixed. Both
 lines keep that policy fixed: proactive agents evaluate it on a fixed user, and self-evolving
