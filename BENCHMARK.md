@@ -1,7 +1,7 @@
-# AskCurve: a lifecycle benchmark for the asking policy of a personalized agent
+# AskCurve: a lifecycle protocol for the interaction policy of a personalized agent
 
-Status: specification, 2026-10-02. Name is provisional. v0 is an extension of the PAHF
-harness; v1 adds our own domain. Nothing here is implemented yet.
+Status: specification, 2026-10-02. Terms follow the proposal report. v0 is built on the PAHF
+harness; v1 adds a second domain. Nothing here is implemented yet.
 
 ## 1. What it measures
 
@@ -12,7 +12,7 @@ Existing benchmarks each hold one piece of this:
 
 | benchmark | has | lacks |
 |---|---|---|
-| PAHF (2602.16173) | pre-action clarification + post-action correction, one persona shift | needed-question labels, stakes, feedback noise, more than one drift, a confirm action; its feedback-frequency metric merges asking with correcting |
+| PAHF (2602.16173) | pre-action clarification + post-action feedback, one preference shift | needed-question labels, stakes, feedback noise, more than one drift, a confirm action; its feedback-frequency metric merges asking with correcting |
 | CAPA (2607.26611) | fewer clarifications as session history fills | drift (the curve only goes down), stakes, any domain beyond coding |
 | ATRBench (2605.28108) | asking now for a preference needed only later | drift, a current-task ask-vs-act decision |
 | MCB (2608.19564) | remember / verify / ask as a three-way choice | a sequence; 140 static scenarios |
@@ -20,7 +20,7 @@ Existing benchmarks each hold one piece of this:
 
 AskCurve puts them on one axis: the **asking curve** of the proposal, the per-task
 record of questions *asked*, questions *needed*, and success, drawn over cold start,
-steady state, drift and recovery. Every metric below is a reading of that curve.
+warm, steady, and drift and recovery. Every metric below is a reading of that curve.
 
 ## 2. Formal setup
 
@@ -55,8 +55,8 @@ At most one `ask` or `confirm` per task in the main track (PAHF convention); a
 multi-question track lifts this.
 
 **Post-action feedback.** With probability $p_{fb}$ the simulated user corrects one
-wrong slot. With probability $\varepsilon$ a correction is *incorrect* (injected noise,
-Risk 3 of the proposal). The agent decides whether to write a correction into memory.
+wrong slot. With probability $\varepsilon$ the feedback is *incorrect* (injected noise).
+The agent decides whether to write the feedback into memory.
 
 **What is fixed.** The backbone LLM, the user simulator, the memory store and the task
 sequence are frozen and seeded. The policy is the only moving part. An open track lets
@@ -75,7 +75,7 @@ Labels are derived from the hidden $\theta_u(t)$, not annotated.
 
 In words: acting silently would fail on this slot and nothing observable repairs it.
 Condition 4 is what stops "always ask when memory is empty" from being optimal; condition
-3's second clause is what makes a stale memory count as empty.
+3's second clause is what makes an outdated note count as missing.
 
 **Four instance types** fall out of these conditions and are balanced by construction:
 
@@ -84,7 +84,7 @@ Condition 4 is what stops "always ask when memory is empty" from being optimal; 
 | A complete | correct entry | no | over-asking in steady state |
 | B missing, unrecoverable | none | yes | under-asking at cold start |
 | C missing, recoverable | none, but $k \in R_t$ or $d_k$ is right | no | the hard negative: inference instead of asking |
-| D stale | entry $\neq \theta_{u,k}(t)$ after drift | yes | re-asking after drift, the failure mode of ask-when-empty |
+| D outdated | entry $\neq \theta_{u,k}(t)$ after drift | yes | asking again after drift, the failure mode of PAHF's fixed rule |
 
 **Worth-asking-early** (optional ATR track). $W_t(k) = $ number of tasks in
 $(t, t+H]$ that depend on $k$. A question about a slot with high $W$ and no current need
@@ -96,10 +96,10 @@ Per user, $T = 60$ tasks in a fixed order:
 
 | phase | tasks | memory state | what the curve should show |
 |---|---|---|---|
-| P1 cold | 1–10 | empty | asked $\approx$ needed, concentrated on high-$r_k$ high-$s_k$ slots |
+| P1 cold start | 1–10 | empty | asked $\approx$ needed, concentrated on high-$r_k$ high-$s_k$ slots |
 | P2 warm | 11–25 | filling | asked falls faster than needed if inference works (type C) |
 | P3 steady | 26–40 | full, correct | asked $\approx 0$; confirms only on high-stake slots |
-| P4 drift | 41–60 | partly stale after scheduled drift at $t=40$ | asked rises again, then falls; success recovers |
+| P4 drift and recovery | 41–60 | partly outdated after scheduled drift at $t=40$ | asked rises again, then falls; success recovers |
 
 Unscheduled drifts land anywhere; they are what distinguishes users by $\lambda_u$.
 
@@ -123,13 +123,13 @@ separately; the pre-registered check in Section 9 is the drift-phase recall.)
 - Gain per early question: P2 success-rate gain per P1 question (Idea 1 metric).
 
 **Drift response.**
-- Detection lag: tasks from a drift to the first re-ask or confirm on a drifted slot.
+- Detection lag: tasks from a drift to the first question or confirm on a drifted slot.
 - Questions to recovery: questions until pre-drift success rate is regained,
   right-censored at 12.
 
 **Hygiene.**
-- Repeat-question rate: same slot asked twice with no intervening drift or correction.
-- Spurious-write rate: injected incorrect corrections written to memory.
+- Repeat-question rate: same slot asked twice with no intervening drift or feedback.
+- Spurious-write rate: incorrect post-action feedback written to memory.
 
 **Logged but not scored.** PAHF's `FF_pre` / `FF_post` (pre-action questions and
 post-action corrections) are kept in the per-task log for comparison with PAHF's own
@@ -137,42 +137,42 @@ numbers; they duplicate the asked curve and the unweighted silent-error count.
 Calibration diagnostic: ask rate binned by the harness's own posterior uncertainty on
 the slot; a calibrated policy asks more where it knows less.
 
-## 6. Reference policies
+## 6. Baselines
 
-Run on every split, in this order; the first four are controls, not contributions.
+Seven baselines run on every split, in this order; the first four are controls, not contributions.
 
 | policy | expected signature on the curve |
 |---|---|
 | Never ask | success = default-match rate; under-asking area maximal |
 | Always ask (one per task) | precision $\approx$ needed rate; over-asking maximal |
-| Ask-when-empty (PAHF rule) | good P1–P3; **needed recall $\to 0$ in P4** |
-| Re-ask at fixed interval | P4 recovers; P3 over-asks at the interval rate |
-| Myopic VOI (REVOIR-style, no memory of recurrence) | good per-task; under-invests in high-$W$ slots at P1 |
+| PAHF's fixed rule (ask only when memory is empty) | good P1–P3; **needed recall $\to 0$ in P4** |
+| Ask again at a fixed interval | P4 recovers; P3 over-asks at the interval rate |
+| One-step value of information (REVOIR-style, no memory of recurrence) | good per-task; under-invests in high-$W$ slots at P1 |
 | Oracle (knows $\theta_u(t)$) | success $\approx 1$, zero questions; defines the floor of both areas |
-| Evolved rules (ours) | the claim: smaller total gap than every fixed rule at equal success |
+| Evolved policy (ours) | the claim: smaller total gap than every fixed baseline over the whole lifecycle |
 
-The ask-when-empty row is the pre-registered demonstration of the proposal's thesis. If
+The PAHF's-fixed-rule row is the pre-registered demonstration of the proposal's thesis. If
 it does not collapse in P4, the thesis is wrong and we report that.
 
 ## 7. Domains and scale
 
 | | v0 (Oct–Nov 2026) | v1 |
 |---|---|---|
-| domains | PAHF embodied, PAHF shopping | + one text domain (writing or coding assistant, CAPA-style recurring ambiguity) |
-| users per domain | PAHF's 40 / 20, re-split 3:1 train/held-out | 60, 20 held-out |
+| domains | PAHF embodied (home assistant), PAHF online shopping | + a second domain (coding assistant, CAPA-style recurring ambiguity) |
+| users per domain | PAHF's 40 / 20, re-split 3:1 previous (evolution) / test | 60, 20 test |
 | slots $K$ | PAHF's attributes, with added $s_k$ and $d_k$ | 8–12 |
 | tasks per user $T$ | 60 (PAHF's 4 phases re-cut) | 60 |
 | drifts per user | 1 scheduled + Poisson($\lambda_u T$) unscheduled | same |
 | feedback noise $\varepsilon$ | 0, 0.1, 0.3 | same |
 
-Held-out users test transfer of an evolved policy (Idea 1); the held-out domain tests
-whether the rules are domain-specific (Risk 1).
+Test users check transfer of an evolved policy (Idea 1); the second domain checks whether
+the rules are domain-specific (Risk 1).
 
 ## 8. What v0 adds to the PAHF harness
 
 Concretely, in `harness/`:
 
-1. needed-question labels from the hidden persona (Section 3);
+1. needed-question labels from the hidden preferences (Section 3);
 2. per-slot stake $s_k$ and default $d_k$;
 3. context-resolvable slots $R_t$ to populate type C;
 4. a `confirm` action with half cost;
@@ -188,7 +188,7 @@ our fork as a check.
 - Oracle reaches success $\geq 0.98$ with zero questions on every split; otherwise the
   labels or the simulator are wrong.
 - Never-ask success equals the default-match rate within 2 points.
-- Ask-when-empty's needed recall in P4 is below 0.1 on every split.
+- PAHF's fixed rule's needed recall in P4 is below 0.1 on every split.
 - Type-C instances make up 25–35% of tasks per phase; otherwise the hard negative is
   too rare to move precision.
 - Re-running with a different seed changes no headline number by more than 1 point.
