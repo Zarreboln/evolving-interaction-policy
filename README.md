@@ -48,9 +48,8 @@ tasks, and harness, and add what the interaction policy needs. The full specific
   context already resolves the slot, so asking is wasted, are included on purpose.
 - Six baselines on every split: never ask, always ask, PAHF's fixed rule, asking again at a
   fixed interval, a one-step value-of-information policy, and the evolved policy.
-- One check stated in advance: in the drift phase PAHF's fixed rule must ask fewer than one
-  in ten of the needed questions, or this prediction about PAHF's fixed rule fails and we
-  report that.
+- We predict that in the drift phase PAHF's fixed rule asks fewer than one in ten of the
+  needed questions.
 
 **Data.** Version 0 instantiates the protocol on PAHF's two domains, a home assistant and an
 online shopping assistant (40 and 20 users, re-split 3:1 into previous users, used for
