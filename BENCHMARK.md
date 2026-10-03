@@ -51,8 +51,8 @@ of three actions:
 | `confirm(k, v)` | 0.5 | yes / no |
 | `act` | 0 | outcome; then post-action feedback |
 
-At most one `ask` or `confirm` per task in the main track (PAHF convention); a
-multi-question track lifts this.
+Any number of `ask` and `confirm` actions per task; each costs its user turns, so the
+asking curve counts questions per task, not tasks with a question.
 
 **Post-action feedback.** With probability $p_{fb}$ the simulated user corrects one
 wrong slot. With probability $\varepsilon$ the feedback is *incorrect* (injected noise).
@@ -144,8 +144,8 @@ Seven baselines run on every split, in this order; the first four are controls, 
 | policy | expected signature on the curve |
 |---|---|
 | Never ask | success = default-match rate; under-asking area maximal |
-| Always ask (one per task) | precision $\approx$ needed rate; over-asking maximal |
-| PAHF's fixed rule (ask only when memory is empty) | good P1–P3; **needed recall $\to 0$ in P4** |
+| Always ask (every slot the task depends on) | over-asking maximal; defines the ceiling of the asked curve |
+| PAHF's fixed rule (ask about every slot memory lacks) | asked $\approx$ needed in P1, over-asks on context-resolvable slots in P2, **needed recall $\to 0$ in P4** |
 | Ask again at a fixed interval | P4 recovers; P3 over-asks at the interval rate |
 | One-step value of information (REVOIR-style, no memory of recurrence) | good per-task; under-invests in high-$W$ slots at P1 |
 | Oracle (knows $\theta_u(t)$) | success $\approx 1$, zero questions; defines the floor of both areas |
