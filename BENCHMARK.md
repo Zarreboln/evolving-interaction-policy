@@ -139,7 +139,7 @@ the slot; a calibrated policy asks more where it knows less.
 
 ## 6. Baselines
 
-Seven baselines run on every split, in this order; the first four are controls, not contributions.
+Six baselines run on every split, in this order; the first four are controls, not contributions.
 
 | policy | expected signature on the curve |
 |---|---|
@@ -148,8 +148,7 @@ Seven baselines run on every split, in this order; the first four are controls, 
 | PAHF's fixed rule (ask about every slot memory lacks) | asked $\approx$ needed in P1, over-asks on context-resolvable slots in P2, **needed recall $\to 0$ in P4** |
 | Ask again at a fixed interval | P4 recovers; P3 over-asks at the interval rate |
 | One-step value of information (REVOIR-style, no memory of recurrence) | good per-task; under-invests in high-$W$ slots at P1 |
-| Oracle (knows $\theta_u(t)$) | success $\approx 1$, zero questions; defines the floor of both areas |
-| Evolved policy (ours) | the claim: smaller total gap than every fixed baseline except the oracle, over the whole lifecycle |
+| Evolved policy (ours) | the claim: smaller total gap than every fixed baseline over the whole lifecycle |
 
 The PAHF's-fixed-rule row is the pre-registered demonstration of the proposal's thesis. If
 it does not collapse in P4, our central hypothesis is wrong and we report that.
@@ -185,8 +184,8 @@ our fork as a check.
 
 ## 9. Validity checks, pre-registered
 
-- Oracle reaches success $\geq 0.98$ with zero questions on every split; otherwise the
-  labels or the simulator are wrong.
+- An agent given the true preferences $\theta_u(t)$ reaches success $\geq 0.98$ with zero
+  questions on every split; otherwise the labels or the simulator are wrong.
 - Never-ask success equals the default-match rate within 2 points.
 - PAHF's fixed rule's needed recall in P4 is below 0.1 on every split.
 - Type-C instances make up 25–35% of tasks per phase; otherwise the hard negative is

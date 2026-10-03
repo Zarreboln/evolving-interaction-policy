@@ -43,8 +43,8 @@ tasks, and harness, and add what the interaction policy needs. The full specific
   (no turn, then post-action feedback that is wrong with a set probability).
 - The harness labels a question *needed* from the hidden preferences; tasks where the
   context already resolves the slot, so asking is wasted, are included on purpose.
-- Seven baselines on every split: never ask, always ask, PAHF's fixed rule, asking again at
-  a fixed interval, a one-step value-of-information policy, an oracle, and the evolved policy.
+- Six baselines on every split: never ask, always ask, PAHF's fixed rule, asking again at a
+  fixed interval, a one-step value-of-information policy, and the evolved policy.
 - One check stated in advance: in the drift phase PAHF's fixed rule must ask fewer than one
   in ten of the needed questions, or the thesis is wrong and we report that.
 
@@ -70,7 +70,7 @@ harness/      PAHF fork plus the seven protocol additions (needed labels, stakes
 policy/       rule list schema, the evolution loop across users (Idea 1), the revision loop
               within a user (Idea 2)
 scorer/       asking curve and the seven metrics from the harness log
-baselines/    never ask · always ask · PAHF's fixed rule · fixed interval · one-step VOI · oracle
+baselines/    never ask · always ask · PAHF's fixed rule · fixed interval · one-step VOI
 experiments/  run configs and logs, one directory per dated run
 ```
 
@@ -83,7 +83,7 @@ the experiments of Idea 2; analysis and the reports are joint.
 | dates | milestone |
 |---|---|
 | Oct 6–13 | fork PAHF, reproduce its four feedback settings, add the seven protocol elements |
-| Oct 14–21 | the six fixed baselines on PAHF and a first run of Idea 1's loop; midterm presentation Oct 21 |
+| Oct 14–21 | the five fixed baselines on PAHF and a first run of Idea 1's loop; midterm presentation Oct 21 |
 | Oct 22–Nov 4 | Idea 1: the loop on previous users, scored on test users |
 | Nov 5–18 | Idea 1 on the second domain; Idea 2's loop within each user |
 | Nov 19–Dec 2 | Idea 2 on the second domain; final presentation Dec 2 |
