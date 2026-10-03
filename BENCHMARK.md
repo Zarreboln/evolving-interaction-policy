@@ -113,7 +113,7 @@ over-asking $\sum_t (\text{asked}_t - \text{needed}_t)^+$ and under-asking
 $\sum_t (\text{needed}_t - \text{asked}_t)^+$. Report both; a single number hides which
 way a policy fails. (Question precision / recall against needed questions are the same
 two quantities normalized by questions asked / questions needed, so they are not listed
-separately; the pre-registered check in Section 8 is the drift-phase recall.)
+separately; the pre-registered check in Section 9 is the drift-phase recall.)
 
 **Cost of silence.**
 - Stake-weighted silent-error cost: $\sum_t \sum_{k \in S_t} s_k \cdot
