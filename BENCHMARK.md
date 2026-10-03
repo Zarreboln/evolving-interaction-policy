@@ -105,35 +105,37 @@ Unscheduled drifts land anywhere; they are what distinguishes users by $\lambda_
 
 ## 5. Metrics
 
-All are readings of the asking curve. Phase-resolved unless stated.
+All are readings of the asking curve. Phase-resolved unless stated. Seven metrics; the
+report (Section 4.3) lists the same seven.
 
 **Headline.** *Asking-curve gap*: area between the asked and needed curves, split into
 over-asking $\sum_t (\text{asked}_t - \text{needed}_t)^+$ and under-asking
 $\sum_t (\text{needed}_t - \text{asked}_t)^+$. Report both; a single number hides which
-way a policy fails.
+way a policy fails. (Question precision / recall against needed questions are the same
+two quantities normalized by questions asked / questions needed, so they are not listed
+separately; the pre-registered check in Section 8 is the drift-phase recall.)
 
-**Decision quality.**
-- Question precision / recall against needed questions (Idea 2 metric).
-- Over-ask rate in P3.
-- Repeat-question rate: same slot asked twice with no intervening drift or correction.
+**Cost of silence.**
 - Stake-weighted silent-error cost: $\sum_t \sum_{k \in S_t} s_k \cdot
   \mathbb{1}[\text{acted wrong on } k]$.
 
 **Efficiency.**
 - Gain per early question: P2 success-rate gain per P1 question (Idea 1 metric).
-- `FF_pre` / `FF_post`: pre-action questions and post-action corrections counted
-  separately, never merged.
 
 **Drift response.**
 - Detection lag: tasks from a drift to the first re-ask or confirm on a drifted slot.
 - Questions to recovery: questions until pre-drift success rate is regained,
   right-censored at 12.
 
-**Memory hygiene.**
+**Hygiene.**
+- Repeat-question rate: same slot asked twice with no intervening drift or correction.
 - Spurious-write rate: injected incorrect corrections written to memory.
 
-**Calibration (diagnostic).** Ask rate binned by the harness's own posterior uncertainty
-on the slot; a calibrated policy asks more where it knows less.
+**Logged but not scored.** PAHF's `FF_pre` / `FF_post` (pre-action questions and
+post-action corrections) are kept in the per-task log for comparison with PAHF's own
+numbers; they duplicate the asked curve and the unweighted silent-error count.
+Calibration diagnostic: ask rate binned by the harness's own posterior uncertainty on
+the slot; a calibrated policy asks more where it knows less.
 
 ## 6. Reference policies
 
